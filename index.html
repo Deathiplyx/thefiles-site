@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Epstein Files Search</title>
+<style>
+body {
+    font-family: Arial;
+    max-width: 800px;
+    margin: 40px auto;
+}
+input {
+    width: 70%;
+    padding: 10px;
+    font-size: 16px;
+}
+button {
+    padding: 10px 16px;
+    font-size: 16px;
+}
+.result {
+    margin-top: 20px;
+}
+.sample {
+    margin-left: 10px;
+    color: #333;
+}
+</style>
+</head>
+<body>
+
+<h2>Search Epstein Files</h2>
+
+<input id="q" placeholder="Enter phrase">
+<button onclick="search()">Search</button>
+
+<div id="out"></div>
+
+<script>
+async function search() {
+    const q = document.getElementById("q").value.trim();
+    if (!q) return;
+
+    const out = document.getElementById("out");
+    out.innerHTML = "Searching...";
+
+    try {
+        const res = await fetch(
+            "https://thefiles.onrender.com/search?q=" + encodeURIComponent(q)
+        );
+
+        const data = await res.json();
+
+        let html = `<p><b>Total:</b> ${data.total}</p>`;
+
+        data.results.forEach(r => {
+            html += `<div class="result">
+                        <b>${r.file}</b> (${r.count})<br>`;
+            r.samples.forEach(s => {
+                html += `<div class="sample">
+                           Page ${s.page}: ${s.context}
+                         </div>`;
+            });
+            html += `</div>`;
+        });
+
+        out.innerHTML = html;
+
+    } catch (e) {
+        out.innerHTML = "Server error";
+    }
+}
+</script>
+
+</body>
+</html>
