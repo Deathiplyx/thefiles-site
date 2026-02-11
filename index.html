@@ -23,7 +23,19 @@ button {
 }
 .sample {
     margin-left: 10px;
+    margin-bottom: 6px;
     color: #333;
+}
+.file-link {
+    text-decoration: none;
+    color: #000;
+}
+.file-link:hover {
+    text-decoration: underline;
+}
+.page-link {
+    font-size: 13px;
+    margin-left: 8px;
 }
 </style>
 </head>
@@ -54,13 +66,29 @@ async function search() {
         let html = `<p><b>Total:</b> ${data.total}</p>`;
 
         data.results.forEach(r => {
+
+            // Use first sample URL (page 1 fallback if none)
+            let fileUrl = "";
+            if (r.samples.length > 0) {
+                fileUrl = r.samples[0].url.split("#")[0];
+            }
+
             html += `<div class="result">
-                        <b>${r.file}</b> (${r.count})<br>`;
+                        <b>
+                          <a class="file-link" href="${fileUrl}" target="_blank">
+                            ${r.file}
+                          </a>
+                        </b> (${r.count})<br>`;
+
             r.samples.forEach(s => {
                 html += `<div class="sample">
                            Page ${s.page}: ${s.context}
+                           <a class="page-link" href="${s.url}" target="_blank">
+                               Open page
+                           </a>
                          </div>`;
             });
+
             html += `</div>`;
         });
 
