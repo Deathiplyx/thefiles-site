@@ -6,10 +6,21 @@
 <title>Document Search</title>
 
 <style>
-    .home-header {
-    position: sticky;
-    top: 0;
-    margin-bottom: 20px;
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    background: linear-gradient(to bottom, #f7f9fc, #ffffff);
+    color: #1a1a1a;
+}
+
+/* Home button */
+.home-header {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
 }
 
 .home-link {
@@ -29,23 +40,7 @@
     box-shadow: 0 6px 14px rgba(0,0,0,0.1);
 }
 
-body {
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
-    background: linear-gradient(to bottom, #f7f9fc, #ffffff);
-    color: #1a1a1a;
-}
-<div class="home-header">
-    <a class="home-link" href="https://funiplyx.carrd.co/" target="_blank">
-        ← Home
-    </a>
-</div>
-
-h2 {
-    margin-bottom: 10px;
-}
+h2 { margin-bottom: 10px; }
 
 .search-box {
     display: flex;
@@ -71,9 +66,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    background: #3b59d1;
-}
+button:hover { background: #3b59d1; }
 
 .result-card {
     background: white;
@@ -89,9 +82,7 @@ button:hover {
     font-weight: bold;
 }
 
-.file-link:hover {
-    text-decoration: underline;
-}
+.file-link:hover { text-decoration: underline; }
 
 .sample {
     margin-top: 8px;
@@ -108,34 +99,15 @@ button:hover {
     color: #666;
     font-style: italic;
 }
-.home-header {
-    position: sticky;
-    top: 0;
-    margin-bottom: 20px;
-}
-
-.home-link {
-    display: inline-block;
-    background: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #2a5bd7;
-    font-weight: 600;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.home-link:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-}
-
 </style>
 
 </head>
 
 <body>
+
+<div class="home-header">
+    <a class="home-link" href="https://funiplyx.carrd.co/" target="_blank">← Home</a>
+</div>
 
 <h2>Search Documents</h2>
 
@@ -164,10 +136,7 @@ async function search() {
         let html = `<div class="result-card"><b>Total matches:</b> ${data.total}</div>`;
 
         data.results.forEach(r => {
-            let fileUrl = "";
-            if (r.samples.length > 0) {
-                fileUrl = r.samples[0].url.split("#")[0];
-            }
+            let fileUrl = r.samples.length ? r.samples[0].url.split("#")[0] : "";
 
             html += `<div class="result-card">
                         <div>
