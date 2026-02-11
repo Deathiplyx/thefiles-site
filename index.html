@@ -1,50 +1,97 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Epstein Files Search</title>
+<title>Document Search</title>
+
 <style>
 body {
-    font-family: Arial;
-    max-width: 800px;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    max-width: 900px;
     margin: 40px auto;
+    padding: 0 20px;
+    background: linear-gradient(to bottom, #f7f9fc, #ffffff);
+    color: #1a1a1a;
 }
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
 input {
-    width: 70%;
-    padding: 10px;
+    flex: 1;
+    padding: 12px;
     font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #dcdfe6;
 }
+
 button {
-    padding: 10px 16px;
+    padding: 12px 18px;
     font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    background: #4a6cf7;
+    color: white;
+    cursor: pointer;
 }
-.result {
-    margin-top: 20px;
+
+button:hover {
+    background: #3b59d1;
 }
-.sample {
-    margin-left: 10px;
-    margin-bottom: 6px;
-    color: #333;
+
+.result-card {
+    background: white;
+    padding: 16px;
+    margin-top: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+
 .file-link {
+    color: #2a5bd7;
     text-decoration: none;
-    color: #000;
+    font-weight: bold;
 }
+
 .file-link:hover {
     text-decoration: underline;
 }
+
+.sample {
+    margin-top: 8px;
+    color: #444;
+    font-size: 14px;
+}
+
 .page-link {
-    font-size: 13px;
-    margin-left: 8px;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.loading {
+    color: #666;
+    font-style: italic;
 }
 </style>
+
 </head>
+
 <body>
 
-<h2>Search Epstein Files</h2>
+<h2>Search Documents</h2>
 
-<input id="q" placeholder="Enter phrase">
-<button onclick="search()">Search</button>
+<div class="search-box">
+    <input id="q" placeholder="Enter phrase">
+    <button onclick="search()">Search</button>
+</div>
 
 <div id="out"></div>
 
@@ -54,7 +101,7 @@ async function search() {
     if (!q) return;
 
     const out = document.getElementById("out");
-    out.innerHTML = "Searching...";
+    out.innerHTML = `<div class="loading">Searching...</div>`;
 
     try {
         const res = await fetch(
@@ -63,29 +110,26 @@ async function search() {
 
         const data = await res.json();
 
-        let html = `<p><b>Total:</b> ${data.total}</p>`;
+        let html = `<div class="result-card"><b>Total matches:</b> ${data.total}</div>`;
 
         data.results.forEach(r => {
-
-            // Use first sample URL (page 1 fallback if none)
             let fileUrl = "";
             if (r.samples.length > 0) {
                 fileUrl = r.samples[0].url.split("#")[0];
             }
 
-            html += `<div class="result">
-                        <b>
+            html += `<div class="result-card">
+                        <div>
                           <a class="file-link" href="${fileUrl}" target="_blank">
                             ${r.file}
                           </a>
-                        </b> (${r.count})<br>`;
+                          (${r.count} matches)
+                        </div>`;
 
             r.samples.forEach(s => {
                 html += `<div class="sample">
                            Page ${s.page}: ${s.context}
-                           <a class="page-link" href="${s.url}" target="_blank">
-                               Open page
-                           </a>
+                           <a class="page-link" href="${s.url}" target="_blank">Open</a>
                          </div>`;
             });
 
@@ -94,8 +138,8 @@ async function search() {
 
         out.innerHTML = html;
 
-    } catch (e) {
-        out.innerHTML = "Server error";
+    } catch {
+        out.innerHTML = `<div class="result-card">Server error</div>`;
     }
 }
 </script>
